@@ -1,14 +1,41 @@
 const winston = require('winston');
 const { format, transports } = winston;
 const { Console, File } = transports;
-const { label, combine, timestamp, json } = format;
+const { label, combine, timestamp, json, printf } = format;
 
 const productionContainer = new winston.Container();
 
-const myFormat = json(({ level, message, label, timestamp }) => {
+const myConsoleFormat = printf(({ level, message, label, timestamp }) => {
 	return `${timestamp} [${label}] ${level}: ${message}`;
 });
 
+const myVerboseFormat = json(({ level, message, label, timestamp }) => {
+	return `${timestamp} [${label}] ${level}: ${message}`;
+});
+
+/**
+ * @typedef Levels
+ * @property {integer} error 0
+ * @property {integer} warn 1
+ * @property {integer} info 2
+ * @property {integer} http 3
+ * @property {integer} verbose 4
+ * @property {integer} debug 5
+ * @property {integer} silly 6
+ */
+
+/**
+ * @typedef Options
+ * @property {string} filename The path where to save the log file
+ * @property {string} level The log level @type {Levels}
+ * @property {winston.Logform.Format} format The text format of the full log row
+ */
+
+/**
+ * Function to set the properties for the Console transporter
+ * @param {string} labelStr The text value of the label
+ * @returns {Options} An object with the properties
+ */
 const setConsoleOptions = (labelStr) => (
 	{
 		filename: './logs/productionLogs.log',
@@ -16,10 +43,15 @@ const setConsoleOptions = (labelStr) => (
 		format: combine(
 			timestamp(),
 			label({ label: labelStr }),
-			myFormat,
+			myConsoleFormat,
 		),
 	});
 
+/**
+* Function to set the properties for the File transporter
+* @param {string} labelStr The text value of the label
+* @returns {Options} An object with the properties
+*/
 const setVerboseOptions = (labelStr) => (
 	{
 		filename: './logs/productionLogs.log',
@@ -27,9 +59,11 @@ const setVerboseOptions = (labelStr) => (
 		format: combine(
 			timestamp(),
 			label({ label: labelStr }),
-			myFormat,
+			myVerboseFormat,
 		),
 	});
+
+// Add one logger for each of the process, methods, classes, etc needed
 
 productionContainer.add('process1', {
 	transports: [
