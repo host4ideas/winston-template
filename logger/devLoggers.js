@@ -1,9 +1,7 @@
 const winston = require('winston');
-const { format, transports } = winston;
+const { createLogger, format, transports } = winston;
 const { Console, File } = transports;
 const { combine, label, colorize, timestamp, printf } = format;
-
-const devContainer = new winston.Container();
 
 const myFormat = printf(({ level, message, label, timestamp }) => {
 	return `${timestamp} [${label}] ${level}: ${message}`;
@@ -14,9 +12,9 @@ const setConsoleOptions = (labelStr) => (
 		filename: './logs/devLogs.log',
 		level: 'debug',
 		format: combine(
+			colorize(),
 			timestamp(),
 			label({ label: labelStr }),
-			colorize(),
 			myFormat,
 		),
 	});
@@ -32,18 +30,19 @@ const setVerboseOptions = (labelStr) => (
 		),
 	});
 
-devContainer.add('process1', {
-	transports: [
-		new Console(setConsoleOptions('process1')),
-		new File(setVerboseOptions('process1'))
-	],
-});
+const loggerCreate = (labelStr) => {
 
-devContainer.add('process2', {
-	transports: [
-		new Console(setConsoleOptions('process2')),
-		new File(setVerboseOptions('process2'))
-	],
-});
+	const transportsOptions = {
+		console: new Console(setConsoleOptions(labelStr)),
+		file: new File(setVerboseOptions(labelStr))
+	};
 
-module.exports = devContainer;
+	return createLogger({
+		transports: [
+			transportsOptions.console,
+			transportsOptions.file
+		]
+	})
+}
+
+module.exports = loggerCreate;

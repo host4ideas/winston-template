@@ -1,13 +1,11 @@
-require('dotenv').config();
-const productionContainer = require('./productionLoggers')
-const devContainer = require('./devLoggers')
+require("dotenv").config();
 
 let logger = null;
 
-if (process.env.NODE_ENV === 'production') {
-	logger = productionContainer;
+if (process.env.ENV === "production") {
+	logger = require('./productionLoggers')
 } else {
-	logger = devContainer;
+    logger = require("./devLoggers");
 }
 
 module.exports = logger;
