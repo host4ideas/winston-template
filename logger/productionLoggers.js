@@ -15,13 +15,13 @@ const myVerboseFormat = json(({ level, message, label, timestamp }) => {
 
 /**
  * @typedef Levels
- * @property {integer} error 0
- * @property {integer} warn 1
- * @property {integer} info 2
+ * @property {integer} error 0 - Very severe error events that might cause the application to terminate.
+ * @property {integer} warn 1 - Error events of considerable importance that will prevent normal program execution, but might still allow the application to continue running.
+ * @property {integer} info 2 - Informational messages that might make sense to end users and system administrators, and highlight the progress of the application.
  * @property {integer} http 3
- * @property {integer} verbose 4
- * @property {integer} debug 5
- * @property {integer} silly 6
+ * @property {integer} verbose 4 - Information broadly interesting to developers who do not have a specialized interest in the specific subsystem. Might include minor (recoverable) failures and issues indicating potential performance problems.
+ * @property {integer} debug 5 - Fairly detailed tracing messages. Calls for entering, returning, or throwing an exception are traced at this level.
+ * @property {integer} silly 6 - Highly detailed tracing messages. Produces the most voluminous output.
  */
 
 /**
