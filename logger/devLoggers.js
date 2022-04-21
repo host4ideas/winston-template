@@ -2,9 +2,10 @@ const winston = require('winston');
 const { createLogger, format, transports } = winston;
 const { Console, File } = transports;
 const { combine, label, colorize, timestamp, printf } = format;
+var path = require('path');
 
 const myFormat = printf(({ level, message, label, timestamp }) => {
-	return `${timestamp} [${label}] ${level}: ${message}`;
+	return `${timestamp} [${label} > ${path.basename(require.main.filename)}] ${level}: ${message}`;
 });
 
 /**
